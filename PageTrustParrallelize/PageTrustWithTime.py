@@ -125,20 +125,30 @@ def calc(g, negative, alpha, m, beta=1):
         cuda.memcpy_htod(P_gpu, P)
         cuda.memcpy_htod(tildeP_gpu, tildeP)
         mod = SourceModule("""
-        __global__ void cudathreading(float* G_gpu,float* x_gpu,float* P_gpu,float* tildeP_gpu, long N) {
+        __global__ void cudathreading(float* G_gpu,float* x_gpu,float* P_gpu,float* tildeP_gpu,negative,long N) {
             long i = blockIdx.x*blockDim.x + threadIdx.x;
             if (element < N) {
             p = 0
-            for k in range(N):
-                p += G_gpu[k, i] * x_gpu[k]
-            x2[i] = (1 - tildeP_gpu[i][i]) ** beta * p
-            for j in range(N):
-                if (i, j) in negative:
-                    P_gpu[i, j] = 1
-            elif i == j:
-                 P_gpu[i, j] = 0
-            else:
-                P_gpu[i, j] = tildeP_gpu[i, j]
+            for( int k = 0; k <= N - 1; k++)
+            {
+                p += G_gpu[k, i] * x_gpu[k];
+                x2[i] = pow( (1 - tildeP_gpu[i][i]) ,beta ) * p;
+            
+                for(int j = 0; j <= N - 1; j++)
+                {
+                    if(i, j) in negative
+                    {
+                        P_gpu[i, j] = 1;
+                    }
+                    else if(i == j)
+                    {
+                        P_gpu[i, j] = 0;
+                    }
+                    else
+                    {
+                        P_gpu[i, j] = tildeP_gpu[i, j];
+                    }
+                }
             }
         }
 
