@@ -2,8 +2,14 @@
 import networkx as nx
 import numpy as np
 from copy import deepcopy
+# Importing to log the time ---------------------------
 import time
+# importing pycuda-------------------------------------
+import pycuda.driver as cuda
+import pycuda.autoinit
+from pycuda.compiler import SourceModule
 
+# ------------------------------------------------------
 #
 # The PageTrust algorithm:
 # How to rank web pages when negative links are allowed?
@@ -88,7 +94,7 @@ def calc(g, negative, alpha, m, beta=1):
         visualize("P", P)
         visualize("tildeP", tildeP)
         x2 = np.zeros(N)
-        # ****************TIME*********************************MARTYN
+        # *******************************TIME*****************************************************MARTYN
         start_time = time.time()
         for i in range(N):
             p = 0
@@ -102,7 +108,52 @@ def calc(g, negative, alpha, m, beta=1):
                     P[i, j] = 0
                 else:
                     P[i, j] = tildeP[i, j]
+        # *******************************TIME**************************MARTYN***************************
         print("THIS IS HOW LONG IT TOOK--- %s seconds ---" % (time.time() - start_time))
+        # using cuda MARTYN-------------------------------------------------------------------
+        print("AND WITH CUDA IT TOOK--- %s seconds ---")
+        G = G.astype(np.float32)
+        x = x.astype(np.float32)
+        P = P.astype(np.float32)
+        tildeP = tildeP.astype(np.float32)
+        G_gpu = cuda.mem_alloc(G.nbytes)
+        x_gpu = cuda.mem_alloc(x.nbytes)
+        P_gpu = cuda.mem_alloc(P.nbytes)
+        tildeP_gpu = cuda.mem_alloc(tildeP.nbytes)
+        cuda.memcpy_htod(G_gpu, G)
+        cuda.memcpy_htod(x_gpu, x)
+        cuda.memcpy_htod(P_gpu, P)
+        cuda.memcpy_htod(tildeP_gpu, tildeP)
+        mod = SourceModule("""
+        __global__ void cudathreading(float* G_gpu,float* x_gpu,float* P_gpu,float* tildeP_gpu, long N) {
+            long i = blockIdx.x*blockDim.x + threadIdx.x;
+            if (element < N) {
+            p = 0
+            for k in range(N):
+                p += G_gpu[k, i] * x_gpu[k]
+            x2[i] = (1 - tildeP_gpu[i][i]) ** beta * p
+            for j in range(N):
+                if (i, j) in negative:
+                    P_gpu[i, j] = 1
+            elif i == j:
+                 P_gpu[i, j] = 0
+            else:
+                P_gpu[i, j] = tildeP_gpu[i, j]
+            }
+        }
+
+        void gpu(float* a, long N) {
+        int numThreads = 1024; // This can vary, up to 1024
+        long numCores = N / 1024 + 1;
+
+        float* gpuA;
+        cudaMalloc(&gpuA, N*sizeof(float)); // Allocate enough memory on the GPU
+        cudaMemcpy(gpuA, a, N*sizeof(float), cudaMemcpyHostToDevice); // Copy array from CPU to GPU
+        cudathreading<<<numCores, numThreads>>>(gpuA, N);  // Call GPU Sqrt
+        cudaMemcpy(a, gpuA, N*sizeof(float), cudaMemcpyDeviceToHost); // Copy array from GPU to CPU
+        cudaFree(&gpuA); // Free the memory on the GPU
+        }""")
+        # ---------------------------------------------------------------------------------------------------------------------------------
         # normalization
         tmpl = 0
         for l in range(N):
