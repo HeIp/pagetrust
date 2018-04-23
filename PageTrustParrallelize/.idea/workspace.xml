@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="81948954-83bf-4ac6-a23e-6430b5a2bd94" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PageTrustWithTime.py" beforeDir="false" afterPath="$PROJECT_DIR$/PageTrustWithTime.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PageTrustWithTime.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -16,14 +13,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="PageTrustWithTime.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/PageTrustWithTime.py">
+      <file leaf-file-name="PageTrustWithTimeVersion1.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/PageTrustWithTimeVersion1.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="346">
-              <caret line="135" column="12" lean-forward="true" selection-start-line="135" selection-start-column="12" selection-end-line="135" selection-end-column="12" />
-              <folding>
-                <element signature="e#15#36#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="135">
+              <caret line="9" column="5" selection-start-line="9" selection-start-column="5" selection-end-line="9" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -33,6 +27,8 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>negative</find>
+      <find>return x2</find>
+      <find>x2 = np.zeros(N)</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -42,6 +38,7 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/PageTrustWithTime.py" />
+        <option value="$PROJECT_DIR$/PageTrustWithTimeVersion1.py" />
       </list>
     </option>
   </component>
@@ -55,8 +52,8 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="20" />
-    <option name="y" value="42" />
+    <option name="x" value="32" />
+    <option name="y" value="56" />
     <option name="width" value="1400" />
     <option name="height" value="751" />
   </component>
@@ -73,6 +70,10 @@
             <path>
               <item name="PageTrustParrallelize" type="b2602c69:ProjectViewProjectNode" />
               <item name="PageTrustParrallelize" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="PageTrustParrallelize" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
             </path>
           </expand>
           <select />
@@ -158,7 +159,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="20" y="42" width="1400" height="751" extended-state="0" />
+    <frame x="32" y="56" width="1400" height="751" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -168,7 +169,7 @@
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" weight="0.329927" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2533137" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2569956" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="4" />
@@ -194,6 +195,16 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/PageTrustWithTime.py">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1905">
+          <caret line="135" column="12" lean-forward="true" selection-start-line="135" selection-start-column="12" selection-end-line="135" selection-end-column="12" />
+          <folding>
+            <element signature="e#15#36#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PageTrustWithTime.py">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2145">
           <caret line="151" column="13" lean-forward="true" selection-start-line="151" selection-start-column="13" selection-end-line="151" selection-end-column="13" />
           <folding>
@@ -204,11 +215,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/PageTrustWithTime.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="346">
-          <caret line="135" column="12" lean-forward="true" selection-start-line="135" selection-start-column="12" selection-end-line="135" selection-end-column="12" />
+        <state relative-caret-position="562">
+          <caret line="121" column="28" lean-forward="true" selection-start-line="121" selection-start-column="28" selection-end-line="121" selection-end-column="28" />
           <folding>
             <element signature="e#15#36#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PageTrustWithTimeVersion1.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="5" selection-start-line="9" selection-start-column="5" selection-end-line="9" selection-end-column="5" />
         </state>
       </provider>
     </entry>
