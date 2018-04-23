@@ -4,7 +4,12 @@ import numpy as np
 from copy import deepcopy
 # Importing to log the time ---------------------------
 import time
+# importing pycuda-------------------------------------
+import pycuda.driver as cuda
+import pycuda.autoinit
+from pycuda.compiler import SourceModule
 
+# ------------------------------------------------------
 #
 # The PageTrust algorithm:
 # How to rank web pages when negative links are allowed?
@@ -34,7 +39,7 @@ def initialize_P(g, negative):
     return P, tildeP
 
 
-def build_transition_matrix(alpha, x, g, G, M):
+def build_transition_matrix(alpha, x, g, m):
     N = len(g)
     T = np.zeros([N, N])
     for i in range(N):
@@ -49,7 +54,7 @@ def build_transition_matrix(alpha, x, g, G, M):
                 continue
             if (j, i) not in g.edges():
                 continue
-            numerator = alpha * g[j][i]['weight'] * x[j] / g.out_degree(j, weight='weight') + M * (1 - alpha) * (
+            numerator = alpha * g[j][i]['weight'] * x[j] / g.out_degree(j, weight='weight') + m * (1 - alpha) * (
                     1 / float(N)) * x[j]
             T[i][j] = numerator / denominator
     visualize('T', T)
@@ -64,7 +69,7 @@ def is_converged(x1, x2):
     return m
 
 
-def calc(g, negative, alpha, M, beta=1):
+def calc(g, negative, alpha, m, beta=1):
     epsilon = 0.000000001
     print "start calc pagetrust, epsilon =", epsilon
     N = len(g)
@@ -72,9 +77,10 @@ def calc(g, negative, alpha, M, beta=1):
     x = x * 1 / N
     visualize("x", x)
     P, tildeP = initialize_P(g, negative)
-    t = 0
+    # t = 0 is not used ever in the code
     G = nx.google_matrix(g)
-    pagerank = nx.pagerank(g, alpha=alpha)
+    # Underlined code is never used...?
+    # pagerank = nx.pagerank(g, alpha=alpha)
     visualize("Google matrix", G)
     t = 0
     while True:
@@ -83,7 +89,7 @@ def calc(g, negative, alpha, M, beta=1):
         print "***"
         print "*** iteration start, time = ", t
         print "***"
-        T = build_transition_matrix(alpha, x, g, G, M)
+        T = build_transition_matrix(alpha, x, g, m)
         tildeP = np.dot(T, P)
         visualize("P", P)
         visualize("tildeP", tildeP)
@@ -104,6 +110,60 @@ def calc(g, negative, alpha, M, beta=1):
                     P[i, j] = tildeP[i, j]
         # *******************************TIME**************************MARTYN***************************
         print("THIS IS HOW LONG IT TOOK--- %s seconds ---" % (time.time() - start_time))
+        # using cuda MARTYN-------------------------------------------------------------------
+        print("AND WITH CUDA IT TOOK--- %s seconds ---")
+        G = G.astype(np.float32)
+        x = x.astype(np.float32)
+        P = P.astype(np.float32)
+        tildeP = tildeP.astype(np.float32)
+        G_gpu = cuda.mem_alloc(G.nbytes)
+        x_gpu = cuda.mem_alloc(x.nbytes)
+        P_gpu = cuda.mem_alloc(P.nbytes)
+        tildeP_gpu = cuda.mem_alloc(tildeP.nbytes)
+        cuda.memcpy_htod(G_gpu, G)
+        cuda.memcpy_htod(x_gpu, x)
+        cuda.memcpy_htod(P_gpu, P)
+        cuda.memcpy_htod(tildeP_gpu, tildeP)
+        mod = SourceModule("""
+        __global__ void cudathreading(float* G_gpu,float* x_gpu,float* P_gpu,float* tildeP_gpu,float* negative,long N) {
+            long i = blockIdx.x*blockDim.x + threadIdx.x;
+            if (element < N) {
+            p = 0
+            for( int k = 0; k <= N - 1; k++)
+            {
+                p += G_gpu[k, i] * x_gpu[k];
+                x2[i] = pow( (1 - tildeP_gpu[i][i]) ,beta ) * p;
+
+                for(int j = 0; j <= N - 1; j++)
+                {
+                    if(i, j) in negative
+                    {
+                        P_gpu[i, j] = 1;
+                    }
+                    else if(i == j)
+                    {
+                        P_gpu[i, j] = 0;
+                    }
+                    else
+                    {
+                        P_gpu[i, j] = tildeP_gpu[i, j];
+                    }
+                }
+            }
+        }
+
+        void gpu(float* a, long N) {
+        int numThreads = 1024; // This can vary, up to 1024
+        long numCores = N / 1024 + 1;
+
+        float* gpuA;
+        cudaMalloc(&gpuA, N*sizeof(float)); // Allocate enough memory on the GPU
+        cudaMemcpy(gpuA, a, N*sizeof(float), cudaMemcpyHostToDevice); // Copy array from CPU to GPU
+        cudathreading<<<numCores, numThreads>>>(gpuA, N);  // Call GPU Sqrt
+        cudaMemcpy(a, gpuA, N*sizeof(float), cudaMemcpyDeviceToHost); // Copy array from GPU to CPU
+        cudaFree(&gpuA); // Free the memory on the GPU
+        }""")
+        # ---------------------------------------------------------------------------------------------------------------------------------
         # normalization
         tmpl = 0
         for l in range(N):
