@@ -16,7 +16,7 @@
       <file leaf-file-name="PageTrustWithTime.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/PageTrustWithTime.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="605">
+            <state relative-caret-position="2970">
               <caret line="202" lean-forward="true" selection-start-line="202" selection-end-line="202" />
               <folding>
                 <element signature="e#15#36#0" expanded="true" />
@@ -164,7 +164,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="32" y="56" width="1400" height="751" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" weight="0.329927" />
@@ -221,7 +220,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/PageTrustWithTime.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="605">
+        <state relative-caret-position="2970">
           <caret line="202" lean-forward="true" selection-start-line="202" selection-end-line="202" />
           <folding>
             <element signature="e#15#36#0" expanded="true" />
